@@ -15,7 +15,7 @@ jobs:
         python-version: 3.8
     - name: Install dependencies
       run: |
-        python -m pip <span class="highlighter highlight-on"><span class="highlighter highlight-on">install</span></span> --upgrade pip
+        python -m pip install --upgrade pip
         pip install pylint
     - name: Analysing the <span class="highlighter highlight-on">code</span> with pylint
       run: |
