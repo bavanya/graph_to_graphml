@@ -4,6 +4,10 @@ from io import BytesIO
 import networkx as nx
 from wtforms import Form, TextField, TextAreaField, validators, StringField, SubmitField
 from main import *
+from graphml_parser import GraphMLParser
+from graph import Graph
+from node import Node
+import fnmatch
 
 # App config.
 DEBUG = True
@@ -17,8 +21,8 @@ graph_ml_file_name = 'graphml.graphml'
 def index():
     return render_template('index.html')
 
-@app.route('/graph', methods=['POST'])
-def graph():
+@app.route('/complete_graph', methods=['POST'])
+def complete_graph():
     nodes = [int(x) for x in request.form.values()]
     node = nodes[0]
     # Creating a networkx complete graph with nodes count as given in the url path.
@@ -46,9 +50,22 @@ def graphml():
 @app.route('/file', methods=['POST'])
 def file():
     f = request.files['file']
-    #f_name = str(f.filename)
-    #G = main_using_networkx(f_name, graph_ml_file_name)
-    return 'file uploaded successfully'
+    f_name = str(f.filename)
+    G = create_graph_from_file(f_name)
+    write_to_graphml_using_networkx(G,'graphml.graphml')
+    nx.draw(G)
+    # Saving the png file of the graph visualization to disk.
+    plt.savefig('graph.png', format="PNG")
+
+    # Saving the graphml of the created complete graph to graphml file.
+    nx.write_graphml(G, graph_ml_file_name)
+
+    img = BytesIO() # file-like object for the image
+    plt.savefig(img) # save the image to the stream
+    img.seek(0) # writing moved the cursor to the end of the file, reset
+    plt.clf() # clear pyplot
+
+    return send_file(img, mimetype='image/png')
 
 if __name__ == "__main__":
     app.run()
