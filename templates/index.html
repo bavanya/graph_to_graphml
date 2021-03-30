@@ -28,7 +28,7 @@
        <h1>Generate GraphML for a given Graph</h1>
     </div>
       <h5>Enter the number of nodes to create and display a complete graph</h5>
-      <form action="{{ url_for('graph')}}"method="post">
+      <form action="{{ url_for('complete_graph')}}"method="post">
           <input type="number" name="nodes" placeholder="nodes" required="required" />
           <input type="submit" class="btn btn-primary">
       </form>
